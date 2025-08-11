@@ -26,40 +26,51 @@ const SignUpForm = () => {
   return (
     <FormProvider {...form}>
       <form
-        className="w-full max-w-96 space-y-5 rounded-md border px-10 py-12"
+        className="w-full space-y-6 rounded-xl border bg-card p-8 shadow-lg"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="text-center">
-          <h2 className="mb-1 text-2xl font-semibold">Create Account</h2>
-          <p className="text-muted-foreground text-sm">
-            Sign up to get started
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">Create Account</h2>
+          <p className="text-muted-foreground">
+            Sign up to start planning your meals
           </p>
         </div>
 
-        <div className="space-y-3">
-          <ControlledInput<SignUpSchema> name="name" label="Full Name" />
-          <ControlledInput<SignUpSchema> name="email" label="Email" />
+        <div className="space-y-4">
+          <ControlledInput<SignUpSchema> 
+            name="name" 
+            label="Full Name" 
+            placeholder="Enter your full name"
+          />
+          <ControlledInput<SignUpSchema> 
+            name="email" 
+            label="Email" 
+            placeholder="Enter your email"
+            type="email"
+          />
           <ControlledInput<SignUpSchema>
             name="password"
             label="Password"
             type="password"
+            placeholder="Create a password"
           />
           <ControlledInput<SignUpSchema>
             name="confirmPassword"
             label="Confirm Password"
             type="password"
+            placeholder="Confirm your password"
           />
         </div>
 
-        <Button className="w-full" isLoading={signUpMutation.isPending}>
-          Sign Up
+        <Button className="w-full" size="lg" isLoading={signUpMutation.isPending}>
+          Create Account
         </Button>
 
         <div className="text-center text-sm">
           Already have an account?{" "}
           <Link
             href="/sign-in"
-            className="text-primary font-medium hover:underline"
+            className="font-medium text-primary hover:underline"
           >
             Sign in
           </Link>

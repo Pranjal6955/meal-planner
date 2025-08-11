@@ -26,26 +26,32 @@ const SignInForm = () => {
   return (
     <FormProvider {...form}>
       <form
-        className="w-full max-w-96 space-y-5 rounded-md border px-10 py-12"
+        className="w-full space-y-6 rounded-xl border bg-card p-8 shadow-lg"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="text-center">
-          <h2 className="mb-1 text-2xl font-semibold">Welcome Back</h2>
-          <p className="text-muted-foreground text-sm">
-            Sign in to your account
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">Welcome Back</h2>
+          <p className="text-muted-foreground">
+            Sign in to your account to continue
           </p>
         </div>
 
-        <div className="space-y-3">
-          <ControlledInput<SignInSchema> name="email" label="Email" />
+        <div className="space-y-4">
+          <ControlledInput<SignInSchema> 
+            name="email" 
+            label="Email" 
+            placeholder="Enter your email"
+            type="email"
+          />
           <ControlledInput<SignInSchema>
             name="password"
             label="Password"
             type="password"
+            placeholder="Enter your password"
           />
         </div>
 
-        <Button className="w-full" isLoading={signInMutation.isPending}>
+        <Button className="w-full" size="lg" isLoading={signInMutation.isPending}>
           Sign In
         </Button>
 
@@ -53,7 +59,7 @@ const SignInForm = () => {
           Don&apos;t have an account?{" "}
           <Link
             href="/sign-up"
-            className="text-primary font-medium hover:underline"
+            className="font-medium text-primary hover:underline"
           >
             Sign up
           </Link>

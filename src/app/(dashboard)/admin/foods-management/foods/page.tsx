@@ -4,13 +4,21 @@ import { FoodFormDialog } from "@/app/(dashboard)/admin/foods-management/foods/_
 
 const Page = () => {
   return (
-    <div className="space-y-2">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold">Foods List</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Foods Management</h1>
+          <p className="text-muted-foreground">
+            Manage your food database and nutritional information
+          </p>
+        </div>
         <FoodFormDialog />
       </div>
-      <FoodFiltersDrawer />
-      <FoodCards />
+      
+      <div className="space-y-4">
+        <FoodFiltersDrawer />
+        <FoodCards />
+      </div>
     </div>
   );
 };

@@ -116,12 +116,14 @@ const MealFormDialog = ({ smallTrigger, session }: MealFormDialogProps) => {
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormProvider {...form}>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <SpecifyMealFoods />
-              </div>
-              <div className="col-span-2">
-                <ControlledDatePicker<MealSchema> name="dateTime" />
+            <div className="max-h-[70vh] overflow-y-auto pr-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <SpecifyMealFoods />
+                </div>
+                <div className="col-span-2">
+                  <ControlledDatePicker<MealSchema> name="dateTime" />
+                </div>
               </div>
             </div>
           </FormProvider>

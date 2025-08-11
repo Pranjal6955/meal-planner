@@ -1,19 +1,13 @@
-import { SignInForm } from "@/app/(auth)/sign-in/_components/sign-in-form";
-import { auth } from "@/lib/auth";
-import { Role } from "@prisma/client";
-import { redirect } from "next/navigation";
+import { SignInForm } from "./_components/sign-in-form";
 
-const Page = async () => {
-  const session = await auth();
-  if (session?.user?.role === Role.ADMIN)
-    redirect("/admin/foods-management/foods");
-  if (session?.user?.role === Role.USER) redirect("/client");
-
+const SignInPage = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <SignInForm />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
+      <div className="w-full max-w-md">
+        <SignInForm />
+      </div>
     </div>
   );
 };
 
-export default Page;
+export default SignInPage;

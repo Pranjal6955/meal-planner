@@ -9,11 +9,14 @@ const useSignUp = () => {
 
   return useMutation({
     mutationFn: async (data: SignUpSchema) => {
-      await signUp(data);
+      return await signUp(data);
     },
     onSuccess: () => {
-      toast.success("Signed up successfully.");
+      toast.success("Account created successfully! Please sign in.");
       router.replace("/sign-in");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to create account");
     },
   });
 };

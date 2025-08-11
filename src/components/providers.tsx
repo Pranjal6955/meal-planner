@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
         toast.error(e.message);
       },
       onSuccess: () => {
-        toast.error("Operation was successful.");
+        toast.success("Operation was successful.");
       },
     },
   },
@@ -33,7 +33,7 @@ const Providers = ({ children }: ProvidersProps) => {
       disableTransitionOnChange
     >
       <QueryClientProvider client={queryClient}>
-        <NextThemesProvider>{children}</NextThemesProvider>
+        {children}
         <Toaster />
         <AlertDialogProvider />
       </QueryClientProvider>

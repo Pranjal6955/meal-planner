@@ -1,5 +1,5 @@
 import db from "@/lib/db";
-import { comparePassword, toNumberSafe, toStringSafe } from "@/lib/utils";
+import { comparePassword, toStringSafe } from "@/lib/utils";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { signInSchema } from "@/app/(auth)/sign-in/_types/signInSchema";
@@ -8,13 +8,16 @@ import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface User {
+    id: string;
     name?: string | null;
+    email: string;
     role?: string | null;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
+    id: string;
     name?: string | null;
     role?: string | null;
   }
@@ -32,60 +35,65 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error("Email and password are required");
         }
 
-        const validatedCredentials = signInSchema.parse(credentials);
+        try {
+          const validatedCredentials = signInSchema.parse(credentials);
 
-        const user = await db.user.findUnique({
-          where: {
-            email: validatedCredentials.email,
-          },
-        });
+          const user = await db.user.findUnique({
+            where: {
+              email: validatedCredentials.email,
+            },
+          });
 
-        if (!user) {
-          throw new Error("Invalid email or password");
+          if (!user) {
+            throw new Error("Invalid email or password");
+          }
+
+          const isPasswordValid = await comparePassword(
+            validatedCredentials.password,
+            user.password,
+          );
+
+          if (!isPasswordValid) {
+            throw new Error("Invalid email or password");
+          }
+
+          return {
+            id: toStringSafe(user.id),
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+        } catch (error) {
+          if (error instanceof Error) {
+            throw new Error(error.message);
+          }
+          throw new Error("Authentication failed");
         }
-
-        const isPasswordValid = await comparePassword(
-          validatedCredentials.password,
-          user.password,
-        );
-
-        if (!isPasswordValid) {
-          throw new Error("Invalid email or password");
-        }
-
-        return {
-          id: toStringSafe(user.id),
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
       },
     }),
   ],
   pages: {
     signIn: "/sign-in",
   },
-
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
     jwt({ token, user }) {
-      const clonedToken = token;
       if (user) {
-        clonedToken.id = toNumberSafe(user.id);
-        clonedToken.name = user?.name;
-        clonedToken.role = user?.role;
+        token.id = user.id;
+        token.name = user.name;
+        token.role = user.role;
       }
-      return clonedToken;
+      return token;
     },
     session({ session, token }) {
-      const clonedSession = session;
-
-      if (clonedSession.user) {
-        clonedSession.user.id = toStringSafe(token.id);
-        clonedSession.user.name = token.name;
-        clonedSession.user.role = token.role;
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.role = token.role;
       }
-
-      return clonedSession;
+      return session;
     },
   },
 });

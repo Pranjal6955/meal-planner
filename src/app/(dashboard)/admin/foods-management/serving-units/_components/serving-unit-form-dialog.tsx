@@ -104,13 +104,15 @@ const ServingUnitFormDialog = ({
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormProvider {...form}>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <ControlledInput<ServingUnitSchema>
-                  name="name"
-                  label="Name"
-                  placeholder="Enter serving unit name"
-                />
+            <div className="max-h-[70vh] overflow-y-auto pr-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <ControlledInput<ServingUnitSchema>
+                    name="name"
+                    label="Name"
+                    placeholder="Enter serving unit name"
+                  />
+                </div>
               </div>
             </div>
           </FormProvider>

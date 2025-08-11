@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { customErrorMap } from "@/lib/customErrorMap";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { motion } from "framer-motion";
@@ -39,6 +38,7 @@ type RouteGroup = {
     href: string;
     label: string;
     icon: ReactNode;
+    roles: string[];
   }[];
 };
 
@@ -50,16 +50,19 @@ const ROUTE_GROUPS: RouteGroup[] = [
         href: "/admin/foods-management/foods",
         label: "Foods",
         icon: <Apple className="mr-2 size-3" />,
+        roles: ["admin"],
       },
       {
         href: "/admin/foods-management/categories",
         label: "Categories",
         icon: <Boxes className="mr-2 size-3" />,
+        roles: ["admin"],
       },
       {
         href: "/admin/foods-management/serving-units",
         label: "Serving Units",
         icon: <Ruler className="mr-2 size-3" />,
+        roles: ["admin"],
       },
     ],
   },
@@ -70,6 +73,7 @@ const ROUTE_GROUPS: RouteGroup[] = [
         href: "/client",
         label: "Meals",
         icon: <Utensils className="mr-2 size-3" />,
+        roles: ["admin", "user"],
       },
     ],
   },
@@ -82,28 +86,37 @@ const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
   const userRole = session.user?.role || "user";
 
   const filteredRouteGroups = ROUTE_GROUPS.filter((group) => {
-    if (userRole === "admin") {
-      return group.group === "Foods Management";
-    } else {
-      return group.group === "Meals Management";
-    }
-  });
+    const accessibleItems = group.items.filter((item) =>
+      item.roles.includes(userRole)
+    );
+    return accessibleItems.length > 0;
+  }).map((group) => ({
+    ...group,
+    items: group.items.filter((item) => item.roles.includes(userRole)),
+  }));
 
   const handleLogout = () => {
     signOutMutation.mutate();
   };
 
   return (
-    <div className="flex">
-      <div className="bg-background fixed z-10 flex h-13 w-screen items-center justify-between border px-2">
-        <Collapsible.Root className="h-full" open={open} onOpenChange={setOpen}>
-          <Collapsible.Trigger className="m-2" asChild>
-            <Button size="icon" variant="outline">
-              <Menu />
-            </Button>
-          </Collapsible.Trigger>
-        </Collapsible.Root>
-        <div className="flex">
+    <div className="flex min-h-screen bg-background">
+      {/* Top Navigation Bar */}
+      <div className="bg-background fixed z-30 flex h-16 w-full items-center justify-between border-b px-4 shadow-sm">
+        <div className="flex items-center gap-4">
+          <Collapsible.Root className="h-full" open={open} onOpenChange={setOpen}>
+            <Collapsible.Trigger className="m-2" asChild>
+              <Button size="icon" variant="outline">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </Collapsible.Trigger>
+          </Collapsible.Root>
+          <h1 className="text-xl font-semibold text-foreground">
+            Meal Planner
+          </h1>
+        </div>
+        
+        <div className="flex items-center gap-2">
           <ThemeToggle />
           {session && (
             <DropdownMenu>
@@ -142,6 +155,7 @@ const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
         </div>
       </div>
 
+      {/* Sidebar */}
       <Collapsible.Root
         className="fixed top-0 left-0 z-20 h-dvh"
         open={open}
@@ -149,35 +163,40 @@ const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
       >
         <Collapsible.Content forceMount>
           <div
-            className={`bg-background fixed top-0 left-0 h-screen w-64 border p-4 transition-transform duration-300 ${
+            className={`bg-background fixed top-0 left-0 h-screen w-72 border-r shadow-lg transition-transform duration-300 ${
               open ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <h1 className="font-semibold">Admin Dashboard</h1>
+            <div className="flex h-16 items-center justify-between border-b px-6">
+              <h2 className="text-lg font-semibold">Navigation</h2>
               <Collapsible.Trigger asChild>
                 <Button size="icon" variant="outline">
-                  <ChevronLeft />
+                  <ChevronLeft className="h-4 w-4" />
                 </Button>
               </Collapsible.Trigger>
             </div>
 
-            <Separator className="my-2" />
-
-            <div className="mt-4 flex flex-col">
-              {filteredRouteGroups.map((routeGroup) => (
-                <RouteGroup {...routeGroup} key={routeGroup.group} />
-              ))}
+            <div className="flex-1 overflow-y-auto p-4">
+              <nav className="space-y-2">
+                {filteredRouteGroups.map((routeGroup) => (
+                  <RouteGroup {...routeGroup} key={routeGroup.group} />
+                ))}
+              </nav>
             </div>
           </div>
         </Collapsible.Content>
       </Collapsible.Root>
+
+      {/* Main Content */}
       <main
-        className={`transition-margin mt-13 flex-1 p-4 duration-300 ${
-          open ? "ml-64" : "ml-0"
+        className={`transition-all duration-300 flex-1 ${
+          open ? "ml-72" : "ml-0"
         }`}
+        style={{ marginTop: "4rem" }}
       >
-        {children}
+        <div className="mx-auto max-w-7xl px-4 py-6">
+          {children}
+        </div>
       </main>
     </div>
   );
@@ -192,20 +211,21 @@ const RouteGroup = ({ group, items }: RouteGroupProps) => {
     <Collapsible.Root open={open} onOpenChange={setOpen}>
       <Collapsible.Trigger asChild>
         <Button
-          className="text-foreground/80 flex w-full justify-between font-normal"
+          className="text-foreground/80 flex w-full justify-between font-medium hover:text-foreground"
           variant="ghost"
         >
           {group}
-          <motion.div animate={{ rotate: open ? 180 : 0 }}>
-            <ChevronDown />
+          <motion.div 
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ChevronDown className="h-4 w-4" />
           </motion.div>
         </Button>
       </Collapsible.Trigger>
       <Collapsible.Content forceMount>
         <motion.div
-          className={`flex flex-col gap-2 ${
-            !open ? "pointer-events-none" : ""
-          }`}
+          className="ml-4 space-y-1"
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
           transition={{ duration: 0.2, ease: "easeInOut" }}
@@ -213,20 +233,20 @@ const RouteGroup = ({ group, items }: RouteGroupProps) => {
           {items.map((item) => (
             <Button
               className="w-full justify-start font-normal"
-              variant="link"
+              variant="ghost"
               asChild
               key={item.href}
             >
               <Link
                 href={item.href}
-                className={`flex items-center rounded-md px-5 py-1 transition-all ${
+                className={`flex items-center rounded-md px-3 py-2 text-sm transition-all hover:bg-accent ${
                   pathname === item.href
-                    ? "bg-foreground/10 hover:bg-foreground/5"
-                    : "hover:bg-foreground/10"
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {item.icon}
-                <span className="text-sm">{item.label}</span>
+                <span>{item.label}</span>
               </Link>
             </Button>
           ))}

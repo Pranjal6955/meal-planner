@@ -109,77 +109,79 @@ const FoodFormDialog = () => {
           className="space-y-6"
         >
           <FormProvider {...form}>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-1 grid">
-                <ControlledInput<FoodSchema>
-                  name="name"
-                  label="Name"
-                  placeholder="Enter food name"
-                />
-              </div>
+            <div className="max-h-[70vh] overflow-y-auto pr-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-1 grid">
+                  <ControlledInput<FoodSchema>
+                    name="name"
+                    label="Name"
+                    placeholder="Enter food name"
+                  />
+                </div>
 
-              <div className="col-span-1 flex items-end">
-                <ControlledSelect<FoodSchema>
-                  label="Category"
-                  name="categoryId"
-                  options={categoriesQuery.data?.map((item) => ({
-                    label: item.name,
-                    value: item.id,
-                  }))}
-                />
-                <CategoryFormDialog smallTrigger />
-              </div>
+                <div className="col-span-1 flex items-end">
+                  <ControlledSelect<FoodSchema>
+                    label="Category"
+                    name="categoryId"
+                    options={categoriesQuery.data?.map((item) => ({
+                      label: item.name,
+                      value: item.id,
+                    }))}
+                  />
+                  <CategoryFormDialog smallTrigger />
+                </div>
 
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="calories"
-                  label="Calories"
-                  type="number"
-                  placeholder="kcal"
-                />
-              </div>
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="protein"
-                  label="Protein"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="carbohydrates"
-                  label="Carbohydrates"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="fat"
-                  label="Fat"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="fiber"
-                  label="Fiber"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="sugar"
-                  label="Sugar"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-              <div className="col-span-2">
-                <SpecifyFoodServingUnits />
+                <div>
+                  <ControlledInput<FoodSchema>
+                    name="calories"
+                    label="Calories"
+                    type="number"
+                    placeholder="kcal"
+                  />
+                </div>
+                <div>
+                  <ControlledInput<FoodSchema>
+                    name="protein"
+                    label="Protein"
+                    type="number"
+                    placeholder="grams"
+                  />
+                </div>
+                <div>
+                  <ControlledInput<FoodSchema>
+                    name="carbohydrates"
+                    label="Carbohydrates"
+                    type="number"
+                    placeholder="grams"
+                  />
+                </div>
+                <div>
+                  <ControlledInput<FoodSchema>
+                    name="fat"
+                    label="Fat"
+                    type="number"
+                    placeholder="grams"
+                  />
+                </div>
+                <div>
+                  <ControlledInput<FoodSchema>
+                    name="fiber"
+                    label="Fiber"
+                    type="number"
+                    placeholder="grams"
+                  />
+                </div>
+                <div>
+                  <ControlledInput<FoodSchema>
+                    name="sugar"
+                    label="Sugar"
+                    type="number"
+                    placeholder="grams"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <SpecifyFoodServingUnits />
+                </div>
               </div>
             </div>
           </FormProvider>

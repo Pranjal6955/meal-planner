@@ -3,13 +3,19 @@ import { ServingUnitFormDialog } from "@/app/(dashboard)/admin/foods-management/
 
 const Page = () => {
   return (
-    <>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold">Serving Units List</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Serving Units Management</h1>
+          <p className="text-muted-foreground">
+            Define measurement units for food portions
+          </p>
+        </div>
         <ServingUnitFormDialog />
       </div>
+      
       <ServingUnitCards />
-    </>
+    </div>
   );
 };
 
