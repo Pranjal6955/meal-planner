@@ -4,9 +4,10 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 type Options<T> = {
   actionFn: () => Promise<T>;
 };
-const executeAction = async <T>({ actionFn }: Options<T>) => {
+
+const executeAction = async <T>({ actionFn }: Options<T>): Promise<T> => {
   try {
-    await actionFn();
+    return await actionFn();
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
