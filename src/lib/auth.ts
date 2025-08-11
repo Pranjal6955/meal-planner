@@ -1,10 +1,9 @@
 import db from "@/lib/db";
 import { comparePassword, toNumberSafe, toStringSafe } from "@/lib/utils";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { signInSchema } from "@/app/(auth)/sign-in/_types/signInSchema";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
