@@ -74,7 +74,7 @@ Configure the following variables:
 ```env
 DATABASE_URL="file:./dev.db"
 NEXTAUTH_SECRET="your-secret-key"
-NEXTAUTH_URL="http://localhost:3005"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 4. Set up the database:
