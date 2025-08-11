@@ -19,6 +19,47 @@ import {
   Utensils,
 } from "lucide-react";
 
+// Types based on Prisma schema
+type MealFood = {
+  id: number;
+  foodId: number;
+  mealId: number;
+  amount: number;
+  servingUnitId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  food: {
+    id: number;
+    name: string;
+    calories: number | null;
+    protein: number | null;
+    fat: number | null;
+    carbohydrates: number | null;
+    fiber: number | null;
+    sugar: number | null;
+    categoryId: number | null;
+    createdAt: Date;
+    updatedAt: Date;
+    mealId: number | null;
+  };
+  servingUnit: {
+    id: number;
+    name: string;
+    foodId: number | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+};
+
+type Meal = {
+  id: number;
+  dateTime: Date;
+  userId: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  mealFoods: MealFood[];
+};
+
 const MealCards = () => {
   const { updateSelectedMealId, updateMealDialogOpen, mealFilters } =
     useMealsStore();
@@ -27,19 +68,19 @@ const MealCards = () => {
 
   const deleteMealMutation = useDeleteMeal();
 
-  const calculateTotalCalories = (mealFoods) => {
-    return mealFoods.reduce((total, mealFood) => {
-      const foodCalories = mealFood.food.calories * mealFood.amount || 0;
+  const calculateTotalCalories = (mealFoods: MealFood[]) => {
+    return mealFoods.reduce((total, mealFood: MealFood) => {
+      const foodCalories = (mealFood.food.calories || 0) * mealFood.amount;
       return total + foodCalories;
     }, 0);
   };
 
-  const calculateNutritionTotals = (meals) => {
+  const calculateNutritionTotals = (meals: Meal[] | undefined) => {
     return (
       meals?.reduce(
-        (totals, meal) => {
-          meal.mealFoods.forEach((mealFood) => {
-            const multiplier = mealFood.amount || 1;
+        (totals, meal: Meal) => {
+          meal.mealFoods.forEach((mealFood: MealFood) => {
+            const multiplier = mealFood.amount;
             totals.calories += (mealFood.food.calories || 0) * multiplier;
             totals.protein += (mealFood.food.protein || 0) * multiplier;
             totals.carbs += (mealFood.food.carbohydrates || 0) * multiplier;
